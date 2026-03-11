@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: memorycli-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  memorycli:
+    build: .
+    container_name: memorycli
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MEMORYCLI_AGENT_ID=${MEMORYCLI_AGENT_ID:-default}
+    volumes:
+      - ./configs:/root/.memorycli
+    stdin_open: true
+    tty: true
+
+volumes:
+  redis-data:

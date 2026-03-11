@@ -1,0 +1,14 @@
+redis:
+  url: redis://localhost:6379
+  password: ""
+  db: 0
+
+agent:
+  id: ""
+
+memory:
+  default_ttl: 0
+  max_results: 100
+  embedding:
+    enabled: false
+    model: "text-embedding-ada-002"
